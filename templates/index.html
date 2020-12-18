@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+<link rel="stylesheet" href="static/styles.css">
+<body>
+<!-- Create a div where the circle will take place -->
+<div id="dataviz_brushScatter"></div>
+</body>
+
+<script src="static/viz.js"></script>
+<script src="static/UserLogger.js"></script>
+
+<script>
+    userLogger = new UserLogger('http://localhost:5000/analytics',
+        10, 20, 'data', {'user': 'test',
+            'condition_1': 'something',
+            'condition_2': 'something else'})
+    var circles = createViz(userLogger)
+
+
+</script>
