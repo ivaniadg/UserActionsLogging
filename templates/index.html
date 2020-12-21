@@ -13,11 +13,9 @@
 <script src="static/UserLogger.js"></script>
 
 <script>
-    userLogger = new UserLogger('http://localhost:5000/analytics',
+    var userLogger = new UserLogger('http://localhost:5000/analytics',
         10, 20, 'data', {'user': 'test',
             'condition_1': 'something',
             'condition_2': 'something else'})
-    var circles = createViz(userLogger)
-
-
+    createViz(userLogger)
 </script>
