@@ -9,13 +9,11 @@ function createViz(userLogger) {
         }
     }
 
-// set the dimensions and margins of the graph
-    var margin = {top: 10, right: 30, bottom: 30, left: 60},
+    let margin = {top: 10, right: 30, bottom: 30, left: 60},
         width = 460 - margin.left - margin.right,
         height = 400 - margin.top - margin.bottom;
 
-// append the svg object to the body of the page
-    var svg = d3.select("#dataviz_brushScatter")
+    let svg = d3.select("#dataviz_brushScatter")
         .append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
@@ -23,22 +21,17 @@ function createViz(userLogger) {
         .attr("transform",
             "translate(" + margin.left + "," + margin.top + ")");
 
-    // Add X axis
-    var x = d3.scaleLinear()
+    let x = d3.scaleLinear()
         .domain([4, 8])
         .range([0, width]);
-// Function that is triggered when brushing is performed
 
-    // A function that return TRUE or FALSE according if a dot is in the selection or not
-
-// Add Y axis
-    var y = d3.scaleLinear()
+    let y = d3.scaleLinear()
         .domain([0, 9])
         .range([height, 0]);
 
 
-    var brush = d3.brush()                 // Add the brush feature using the d3.brush function
-        .extent([[0, 0], [width, height]])
+    let brush = d3.brush()
+        .extent([[0, 0], [width, height]]);
 
     function isBrushed(brush_coords, cx, cy) {
         var x0 = brush_coords[0][0],
@@ -49,35 +42,35 @@ function createViz(userLogger) {
     }
 
     function updateChart() {
-        extent = d3.event.selection
+        let extent = d3.event.selection
         svg.selectAll("circle").classed("selected", function (d) {
             return isBrushed(extent, x(d.Sepal_Length), y(d.Petal_Length))
         })
+
     }
 
-    userLogger.subscribeObject('circle')
     brush.on("start brush", updateChart)
+    brush.on('start', function(){
+        let extent = d3.event.selection
+        // We don't subscribe this event, we manually add it to the queue
+        userLogger.addAction({'action': 'new brush', 'dimensions': extent})})
     svg.append("g")
         .attr("class", "brush")
         .call(brush);
-//Read the data
-    d3.csv("https://raw.githubusercontent.com/indonoso/UserActionsLogging/master/data/iris.csv", function (data) {
 
+    d3.csv("https://raw.githubusercontent.com/indonoso/UserActionsLogging/master/data/iris.csv", function (data) {
 
         svg.append("g")
             .attr("transform", "translate(0," + height + ")")
             .call(d3.axisBottom(x));
 
-
         svg.append("g")
             .call(d3.axisLeft(y));
 
-        // Color scale: give me a specie name, I return a color
-        var color = d3.scaleOrdinal()
+        let color = d3.scaleOrdinal()
             .domain(["setosa", "versicolor", "virginica"])
             .range(["#440154ff", "#21908dff", "#fde725ff"])
 
-        // Add dots
         svg.append('g')
             .selectAll("circle")
             .data(data)
@@ -106,6 +99,7 @@ function createViz(userLogger) {
             .style("opacity", 0.5)
             .on("click", toggleAlpha());
 
+        // Here we subscribe all the circles to the logging events
         userLogger.subscribeObject('circle')
     })
 
