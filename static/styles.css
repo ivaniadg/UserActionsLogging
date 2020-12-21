@@ -3,3 +3,6 @@
   stroke: black;
   stroke-width: 1px;
 }
+.clicked{
+  r: 20;
+}

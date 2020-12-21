@@ -1,12 +1,9 @@
 function createViz(userLogger) {
 
-    function toggleAlpha() {
-        var currentAlpha = 0.5;
-
-        return function () {
-            currentAlpha = currentAlpha == 0.5 ? 1 : 0.5;
-            d3.select(this).style("opacity", currentAlpha);
-        }
+    // This function is just to see the click visually
+    function toggleSize() {
+        svg.selectAll(".clicked").classed("clicked", false)
+        d3.select(this).attr("class", "clicked")
     }
 
     let margin = {top: 10, right: 30, bottom: 30, left: 60},
@@ -97,7 +94,7 @@ function createViz(userLogger) {
                 return color(d.Species)
             })
             .style("opacity", 0.5)
-            .on("click", toggleAlpha());
+            .on("click", toggleSize);  // You can have several event listeners
 
         // Here we subscribe all the circles to the logging events
         userLogger.subscribeObject('circle')
