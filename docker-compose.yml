@@ -1,0 +1,17 @@
+version: "3.9"
+services:
+  web:
+
+  celery:
+
+  redis:
+      image: "redis:alpine"
+      ports:
+        - "6379:6379"
+  db:
+      image: postgres
+      restart: always
+      environment:
+        POSTGRES_PASSWORD: example
+      ports:
+        - "5432:5433"

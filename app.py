@@ -3,10 +3,18 @@ import json
 from datetime import datetime
 from functools import wraps, update_wrapper
 from flask_cors import CORS
+from celery import Celery
+
 
 app = Flask(__name__)
-app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+app.config.from_object("config")
+app.secret_key = app.config['SECRET_KEY']
 CORS(app)
+
+
+task_broker = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
+task_broker.conf.update(app.config)
+
 
 
 def nocache(view):
@@ -31,8 +39,15 @@ def index():
 @app.route("/analytics", methods=["POST"])
 @nocache
 def save_analytics():
-    print(json.dumps(request.get_json()))
+    data = request.get_json()
+    process_actions.apply_async(data)
     return make_response('Received', 200)
+
+
+@task_broker.task
+def process_actions():
+    # TODO: expand json and put in db
+    pass
 
 
 if __name__ == '__main__':
