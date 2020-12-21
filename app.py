@@ -2,10 +2,11 @@ from flask import Flask, make_response, request, render_template
 import json
 from datetime import datetime
 from functools import wraps, update_wrapper
-
+from flask_cors import CORS
 
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+CORS(app)
 
 
 def nocache(view):
