@@ -43,14 +43,18 @@ function createViz(userLogger) {
         svg.selectAll("circle").classed("selected", function (d) {
             return isBrushed(extent, x(d.Sepal_Length), y(d.Petal_Length))
         })
-
     }
-
-    brush.on("start brush", updateChart)
-    brush.on('start', function(){
+    function startBrush(){
+        updateChart()
         let extent = d3.event.selection
         // We don't subscribe this event, we manually add it to the queue
-        userLogger.addAction({'action': 'new brush', 'dimensions': extent})})
+        userLogger.addAction({'action': 'new brush', 'dimensions': extent})
+    }
+
+    brush.on("start", startBrush)
+
+    brush.on("brush", updateChart)
+
     svg.append("g")
         .attr("class", "brush")
         .call(brush);
