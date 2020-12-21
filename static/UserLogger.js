@@ -5,16 +5,18 @@ class UserLogger {
         this.server = urlServer;
         this.attributesName = attributesName;
         this.constantAttributes = constantAttributes;
-
+        this.maxTime = maxTime ;
         this.setTimer()
 
     }
 
     setTimer() {
-        var checkFunction = function (logger) {
+        let checkFunction = function (logger) {
             return function () {
-                if (logger.actions.length >= logger.maxActions) {
+                if (logger.actions.length > 0){
+                    console.log("Time's up, sending all actions")
                     logger.sendActions(logger.actions)
+
                 }
             }
         }
@@ -59,7 +61,7 @@ class UserLogger {
 
     addAction(action) {
         this.actions.push(this.addTimeStamp(action));
-        for (var key in this.constantAttributes) {
+        for (let key in this.constantAttributes) {
             action[key] = this.constantAttributes[key]
         }
         this.checkSendActions()
@@ -67,6 +69,7 @@ class UserLogger {
 
     checkSendActions() {
         if (this.actions.length >= this.maxActions) {
+            console.log('Reached max actions.')
             this.sendActions(this.actions)
         }
     }
@@ -87,8 +90,8 @@ class UserLogger {
         })
             .then(response => {
                 if (response.status == 200) {
-                    console.log("Send correctly")
-                    this.actions = this.actions.slice(this.maxActions)
+                    console.log("Sent correctly")
+                    this.actions = this.actions.slice(actions.length)
                 }
             })
             .catch(err => {
