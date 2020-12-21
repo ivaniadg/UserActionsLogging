@@ -59,7 +59,9 @@ class UserLogger {
 
     addAction(action) {
         this.actions.push(this.addTimeStamp(action));
-
+        for (var key in this.constantAttributes) {
+            action[key] = this.constantAttributes[key]
+        }
         this.checkSendActions()
     }
 
