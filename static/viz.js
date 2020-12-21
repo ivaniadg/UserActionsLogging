@@ -48,7 +48,7 @@ function createViz(userLogger) {
         updateChart()
         let extent = d3.event.selection
         // We don't subscribe this event, we manually add it to the queue
-        userLogger.addAction({'action': 'new brush', 'dimensions': extent})
+        userLogger.addAction({'action': 'new brush', 'dimensions': extent}, d3.event.sourceEvent)
     }
 
     brush.on("start", startBrush)

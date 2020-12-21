@@ -38,11 +38,8 @@ class UserLogger {
             })
 
             element.addEventListener('click', function (event) {
-                var action = {
-                    'element_id': element.id, 'x': event.pageX, 'y': event.pageY,
-                    'timestamp': Date.now()
-                }
-                for (var key in logger.constantAttributes) {
+                let action = logger.addTimeStampXandY({'element_id': element.id}, event)
+                for (let key in logger.constantAttributes) {
                     action[key] = logger.constantAttributes[key]
                 }
 
@@ -59,8 +56,8 @@ class UserLogger {
         })
     }
 
-    addAction(action) {
-        this.actions.push(this.addTimeStamp(action));
+    addAction(action, event) {
+        this.actions.push(this.addTimeStampXandY(action, event));
         for (let key in this.constantAttributes) {
             action[key] = this.constantAttributes[key]
         }
@@ -74,8 +71,14 @@ class UserLogger {
         }
     }
 
-    addTimeStamp(action) {
+    addTimeStampXandY(action, event) {
         action['timestamp'] = Date.now()
+        action['pageX'] = event.pageX
+        action['pageY'] = event.pageY
+        action['clientX'] = event.clientX
+        action['clientY'] = event.clientY
+        action['screenX'] = event.screenX
+        action['screenY'] = event.screenY
         return action;
     }
 
