@@ -2,7 +2,7 @@ from flask import Flask, make_response, render_template
 from datetime import datetime
 from functools import wraps, update_wrapper
 from flask_cors import CORS
-
+from config import ANALYTICS_SERVER
 
 app = Flask(__name__)
 app.config.from_object("config")
@@ -26,7 +26,7 @@ def nocache(view):
 @app.route('/')
 @nocache
 def index():
-    return render_template("index.html")
+    return render_template("index.html", analytics_server=ANALYTICS_SERVER)
 
 
 if __name__ == '__main__':

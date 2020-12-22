@@ -13,7 +13,7 @@
 <script src="static/UserLogger.js"></script>
 
 <script>
-    var userLogger = new UserLogger('http://localhost:5000/analytics',
+    var userLogger = new UserLogger("{{ analytics_server }}",
         10, 20, 'data', {'user': 'test',
             'condition_1': 'something',
             'condition_2': 'something else'})

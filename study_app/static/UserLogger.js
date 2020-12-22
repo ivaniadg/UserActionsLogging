@@ -87,8 +87,10 @@ class UserLogger {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
+                "Access-Control-Allow-Origin": "*"
                 // add authorization method. JWT is preferred
             },
+            mode: 'no-cors',
             body: JSON.stringify(actions),
         })
             .then(response => {

@@ -7,3 +7,5 @@ SEND_FILE_MAX_AGE_DEFAULT = 0
 SECRET_KEY = os.getenv('SECRET_KEY')
 PORT = int(os.getenv('PORT', 5000))
 HOST = os.getenv('HOST', '0.0.0.0')
+
+ANALYTICS_SERVER = os.getenv('ANALYTICS_SERVER')
