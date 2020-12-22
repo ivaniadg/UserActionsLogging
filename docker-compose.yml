@@ -1,17 +1,56 @@
 version: "3.9"
 services:
-  web:
-
+  study_app:
+    image: study_app:lastest
+    build:
+      context: ./study_app
+      dockerfile: Dockerfile
+    depends_on:
+      - analytics_app
+    links:
+      - analytics_app
+    environment:
+      - ANALYTICS_SERVER=http://localhost:5003/analytics
+    ports:
+      - "5002:5000"
+      # volumes line used for hot code reloading
+    volumes:
+      - './study_app/:/web'
+  analytics_app:
+    image: analytics_app:lastest
+    build:
+      context: ./analytics_app
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+     - "5003:5000"
+    links:
+      - redis
+    depends_on:
+      - redis
+    # volumes line used for hot code reloading
+    volumes:
+      - './analytics_app/:/api'
   celery:
-
+    image: celery
+    build:
+      context: ./analytics_app
+      dockerfile: Dockerfile_celery
+    links:
+      - redis
+    volumes:
+      - './analytics_app:/queue'
+    depends_on:
+      - analytics_app
+      - redis
   redis:
       image: "redis:alpine"
       ports:
         - "6379:6379"
-  db:
-      image: postgres
-      restart: always
-      environment:
-        POSTGRES_PASSWORD: example
-      ports:
-        - "5432:5433"
+#  db:
+#      image: postgres
+#      restart: always
+#      environment:
+#        POSTGRES_PASSWORD: example
+#      ports:
+#        - "5432:5433"
