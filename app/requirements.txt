@@ -1,0 +1,6 @@
+flask
+flask_cors
+celery
+python-dotenv
+psycopg2
+sqlalchemy

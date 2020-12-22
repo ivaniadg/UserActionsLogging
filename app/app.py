@@ -1,20 +1,21 @@
 from flask import Flask, make_response, request, render_template
-import json
+from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from functools import wraps, update_wrapper
 from flask_cors import CORS
 from celery import Celery
+from models import ActionRAW, Position
 
 
 app = Flask(__name__)
 app.config.from_object("config")
 app.secret_key = app.config['SECRET_KEY']
-CORS(app)
 
+CORS(app)
+db = SQLAlchemy(app)
 
 task_broker = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
 task_broker.conf.update(app.config)
-
 
 
 def nocache(view):
@@ -45,9 +46,28 @@ def save_analytics():
 
 
 @task_broker.task
-def process_actions():
-    # TODO: expand json and put in db
-    pass
+def process_actions(data):
+    raw_actions = []
+    interest = []
+    for action in data:
+        # First: save the raw json.
+        raw = ActionRAW(action)
+        # Second: save the transformed action for analysis
+        position = Position(screen_x=action['screen_x'],
+                            screen_y=action['screen_y'],
+                            user=action['user'],
+                            condition1=action['condition1'],
+                            condition2=action['condition2'],
+                            name=action['name'],
+                            timestamp=action['timestamp'])
+        raw_actions.append(raw)
+        interest.append(position)
+
+    db.session.add_all(raw_actions)
+    db.session.commit()
+
+    db.session.add_all(interest)
+    db.session.commit()
 
 
 if __name__ == '__main__':
