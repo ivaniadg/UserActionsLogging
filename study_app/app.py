@@ -4,7 +4,7 @@ from datetime import datetime
 from functools import wraps, update_wrapper
 from flask_cors import CORS
 from celery import Celery
-from models import ActionRAW, Position
+from app.models import ActionRAW, Position
 
 
 app = Flask(__name__)
