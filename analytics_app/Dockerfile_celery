@@ -1,0 +1,15 @@
+FROM python:3.6.5
+
+ARG CELERY_BROKER_URL
+ARG CELERY_RESULT_BACKEND
+
+COPY requirements.txt ./
+
+RUN pip install -r requirements.txt
+
+COPY . /queue
+WORKDIR /queue
+
+EXPOSE 5000
+
+ENTRYPOINT celery -A app.task_broker worker --loglevel=info
