@@ -59,7 +59,7 @@ function createViz(userLogger) {
         .attr("class", "brush")
         .call(brush);
 
-    d3.csv("https://raw.githubusercontent.com/indonoso/UserActionsLogging/master/data/iris.csv", function (data) {
+    d3.csv("https://raw.githubusercontent.com/indonoso/UserActionsLogging/main/study_app/data/iris.csv", function (data) {
 
         svg.append("g")
             .attr("transform", "translate(0," + height + ")")
