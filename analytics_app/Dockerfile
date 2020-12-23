@@ -8,6 +8,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-ENTRYPOINT [ "python" ]
-
-CMD [ "app.py" ]
+CMD ["python", "manage.py" ,"run", "-h", "0.0.0.0"]

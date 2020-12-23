@@ -1,17 +1,21 @@
-from flask import Flask, make_response, request, render_template
+from flask import Flask, make_response, request
 from flask_sqlalchemy import SQLAlchemy
 from celery import Celery
-# from models import ActionRAW, Position
-
-
+import logging
+import json
+# APP
 app = Flask(__name__)
 app.config.from_object("config")
 app.secret_key = app.config['SECRET_KEY']
 
+# DB
 db = SQLAlchemy(app)
 
+# Task Broker
 task_broker = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
 task_broker.conf.update(app.config)
+
+from models import ActionRAW, Position
 
 
 @app.route("/analytics", methods=["POST"])
@@ -24,29 +28,24 @@ def save_analytics():
 @task_broker.task(bind=True, name='process_actions')
 def process_actions(self, data):
     print(data)
-    # raw_actions = []
-    # interest = []
-    # for action in data:
-    #     # First: save the raw json.
-    #     raw = ActionRAW(action)
-    #     # Second: save the transformed action for analysis
-    #     position = Position(screen_x=action['screen_x'],
-    #                         screen_y=action['screen_y'],
-    #                         user=action['user'],
-    #                         condition1=action['condition1'],
-    #                         condition2=action['condition2'],
-    #                         name=action['name'],
-    #                         timestamp=action['timestamp'])
-    #     raw_actions.append(raw)
-    #     interest.append(position)
-    #
-    # db.session.add_all(raw_actions)
-    # db.session.commit()
-    #
-    # db.session.add_all(interest)
-    # db.session.commit()
+    raw_actions = []
+    interest = []
+    for action in data:
+        # First: save the raw json.
+        raw = ActionRAW(action)
+        # Second: save the transformed action for analysis
+        position = Position(screen_x=action['screen_x'],
+                            screen_y=action['screen_y'],
+                            user=action['user'],
+                            condition1=action['condition1'],
+                            condition2=action['condition2'],
+                            name=action['name'],
+                            timestamp=action['timestamp'])
+        raw_actions.append(raw)
+        interest.append(position)
 
+    db.session.add_all(raw_actions)
+    db.session.commit()
 
-if __name__ == '__main__':
-    app.run(host=app.config['HOST'],
-            port=app.config['PORT'])
+    db.session.add_all(interest)
+    db.session.commit()
