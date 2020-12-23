@@ -1,5 +1,5 @@
-from sqlalchemy import Column, Integer, String, JSON
-from app.app import db
+from sqlalchemy import Column, Integer, String, JSON, ForeignKey
+from app import db
 
 
 class ActionRAW(db.Model):
@@ -10,9 +10,10 @@ class ActionRAW(db.Model):
 
 
 class Position(db.Model):
-    __tablename__ = 'position'
+    __tablename__ = 'positions'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
+    raw_action = Column(Integer, ForeignKey('actions.id'))
     screen_x = Column(Integer)
     screen_y = Column(Integer)
     name = Column(String)

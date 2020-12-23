@@ -5,8 +5,6 @@ services:
     build:
       context: ./study_app
       dockerfile: Dockerfile
-    depends_on:
-      - analytics_app
     links:
       - analytics_app
     environment:
@@ -47,10 +45,13 @@ services:
       image: "redis:alpine"
       ports:
         - "6379:6379"
-#  db:
-#      image: postgres
-#      restart: always
-#      environment:
-#        POSTGRES_PASSWORD: example
-#      ports:
-#        - "5432:5433"
+  db:
+    image: postgres:12-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - postgres.env
+    ports:
+      - '5433:5432'
+volumes:
+  postgres_data:
