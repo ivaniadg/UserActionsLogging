@@ -74,24 +74,23 @@ class UserLogger {
 
     addTimeStampXandY(action, event) {
         action['timestamp'] = Date.now()
-        action['pageX'] = event.pageX
-        action['pageY'] = event.pageY
-        action['clientX'] = event.clientX
-        action['clientY'] = event.clientY
-        action['screenX'] = event.screenX
-        action['screenY'] = event.screenY
+        action['page_x'] = event.pageX
+        action['page_y'] = event.pageY
+        action['client_x'] = event.clientX
+        action['client_y'] = event.clientY
+        action['screen_x'] = event.screenX
+        action['screen_y'] = event.screenY
         return action;
     }
 
     sendActions(actions) {
         fetch(this.server, {
-            method: 'POST',
+            method: "POST",
             headers: {
-                'content-type': 'application/json',
+                "Content-Type": "application/json",
                 "Access-Control-Allow-Origin": "*"
                 // add authorization method. JWT is preferred
             },
-            mode: 'no-cors',
             body: JSON.stringify(actions),
         })
             .then(response => {

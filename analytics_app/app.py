@@ -1,8 +1,8 @@
 from flask import Flask, make_response, request
 from flask_sqlalchemy import SQLAlchemy
 from celery import Celery
-import logging
-import json
+from flask_cors import CORS
+
 # APP
 app = Flask(__name__)
 app.config.from_object("config")
@@ -14,6 +14,7 @@ db = SQLAlchemy(app)
 # Task Broker
 task_broker = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
 task_broker.conf.update(app.config)
+CORS(app)
 
 from models import ActionRAW, PositionScreen
 
