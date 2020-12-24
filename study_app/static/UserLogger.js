@@ -38,7 +38,8 @@ class UserLogger {
             })
 
             element.addEventListener('click', function (event) {
-                let action = logger.addTimeStampXandY({'element_id': element.id}, event)
+                let action = logger.addTimeStampXandY({'element_id': element.id,
+                'name': 'click'}, event)
                 for (let key in logger.constantAttributes) {
                     action[key] = logger.constantAttributes[key]
                 }

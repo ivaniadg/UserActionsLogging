@@ -15,7 +15,7 @@ db = SQLAlchemy(app)
 task_broker = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
 task_broker.conf.update(app.config)
 
-from models import ActionRAW, Position
+from models import ActionRAW, PositionScreen
 
 
 @app.route("/analytics", methods=["POST"])
@@ -27,25 +27,22 @@ def save_analytics():
 
 @task_broker.task(bind=True, name='process_actions')
 def process_actions(self, data):
-    print(data)
-    raw_actions = []
     interest = []
     for action in data:
         # First: save the raw json.
-        raw = ActionRAW(action)
+        raw = ActionRAW(data=action)
+        db.session.add(raw)
+        db.session.commit()
         # Second: save the transformed action for analysis
-        position = Position(screen_x=action['screen_x'],
+        position = PositionScreen(raw_action=raw.id,
+                            screen_x=action['screen_x'],
                             screen_y=action['screen_y'],
                             user=action['user'],
-                            condition1=action['condition1'],
-                            condition2=action['condition2'],
+                            condition_1=action['condition_1'],
+                            condition_2=action['condition_2'],
                             name=action['name'],
                             timestamp=action['timestamp'])
-        raw_actions.append(raw)
         interest.append(position)
-
-    db.session.add_all(raw_actions)
-    db.session.commit()
 
     db.session.add_all(interest)
     db.session.commit()
